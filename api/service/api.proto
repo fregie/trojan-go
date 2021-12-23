@@ -71,6 +71,17 @@ message SetUsersResponse {
     string info = 2;
 }
 
+message GetRecordsRequest {}
+
+message GetRecordsResponse {
+    string Timestamp = 1;
+    string UserHash = 2;
+    string ClientIP = 3;
+    string ClientPort = 4;
+    string TargetHost = 5;
+    string TargetPort = 6;
+}
+
 service TrojanClientService {
     rpc GetTraffic(GetTrafficRequest) returns(GetTrafficResponse){}
 }
@@ -82,4 +93,6 @@ service TrojanServerService {
     rpc GetUsers(stream GetUsersRequest) returns(stream GetUsersResponse){}
     // setup existing users' config
     rpc SetUsers(stream SetUsersRequest) returns(stream SetUsersResponse){}
+    // get traffic records
+    rpc GetRecords(GetRecordsRequest) returns(stream GetRecordsResponse){}
 }

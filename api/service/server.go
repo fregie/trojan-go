@@ -15,6 +15,7 @@ import (
 	"github.com/p4gefau1t/trojan-go/common"
 	"github.com/p4gefau1t/trojan-go/config"
 	"github.com/p4gefau1t/trojan-go/log"
+	"github.com/p4gefau1t/trojan-go/recorder"
 	"github.com/p4gefau1t/trojan-go/statistic"
 	"github.com/p4gefau1t/trojan-go/tunnel/trojan"
 )
@@ -177,6 +178,27 @@ func (s *ServerAPI) ListUsers(req *ListUsersRequest, stream TrojanServerService_
 		if err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+func (s *ServerAPI) GetRecords(req *GetRecordsRequest, stream TrojanServerService_GetRecordsServer) error {
+	log.Debug("API: GetRecords")
+	record := recorder.Remove()
+	for record != nil {
+		r := record.(recorder.Record)
+		err := stream.Send(&GetRecordsResponse{
+			Timestamp:  r.Timestamp,
+			UserHash:   r.UserHash,
+			ClientIP:   r.ClientIP,
+			ClientPort: r.ClientPort,
+			TargetHost: r.TargetHost,
+			TargetPort: r.TargetPort,
+		})
+		if err != nil {
+			return err
+		}
+		record = recorder.Remove()
 	}
 	return nil
 }

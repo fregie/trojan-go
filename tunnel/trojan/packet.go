@@ -9,11 +9,13 @@ import (
 
 	"github.com/p4gefau1t/trojan-go/common"
 	"github.com/p4gefau1t/trojan-go/log"
+	"github.com/p4gefau1t/trojan-go/recorder"
 	"github.com/p4gefau1t/trojan-go/tunnel"
 )
 
 type PacketConn struct {
 	tunnel.Conn
+	hash string
 }
 
 func (c *PacketConn) ReadFrom(payload []byte) (int, net.Addr, error) {
@@ -79,6 +81,7 @@ func (c *PacketConn) ReadWithMetadata(payload []byte) (int, *tunnel.Metadata, er
 	}
 
 	log.Debug("udp packet from", c.RemoteAddr(), "metadata", addr.String(), "size", length)
+	recorder.Add(c.hash, c.RemoteAddr(), addr)
 	return length, &tunnel.Metadata{
 		Address: addr,
 	}, nil

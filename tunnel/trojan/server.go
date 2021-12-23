@@ -11,6 +11,7 @@ import (
 	"github.com/p4gefau1t/trojan-go/common"
 	"github.com/p4gefau1t/trojan-go/config"
 	"github.com/p4gefau1t/trojan-go/log"
+	"github.com/p4gefau1t/trojan-go/recorder"
 	"github.com/p4gefau1t/trojan-go/redirector"
 	"github.com/p4gefau1t/trojan-go/statistic"
 	"github.com/p4gefau1t/trojan-go/statistic/memory"
@@ -61,6 +62,7 @@ func (c *InboundConn) Close() error {
 	log.Debug("user", c.hash, "from", c.Conn.RemoteAddr(), "tunneling to", c.metadata.Address, "closed",
 		"sent:", common.HumanFriendlyTraffic(atomic.LoadUint64(&c.sent)), "recv:", common.HumanFriendlyTraffic(atomic.LoadUint64(&c.recv)))
 	c.user.DelIP(c.ip)
+	recorder.Add(c.hash, c.Conn.RemoteAddr(), c.metadata.Address)
 	return c.Conn.Close()
 }
 
@@ -172,6 +174,7 @@ func (s *Server) acceptLoop() {
 			case Associate:
 				s.packetChan <- &PacketConn{
 					Conn: inboundConn,
+					hash: inboundConn.hash,
 				}
 				log.Debug("trojan udp connection")
 			case Mux:
