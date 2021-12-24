@@ -190,7 +190,7 @@ func (s *ServerAPI) GetRecords(req *GetRecordsRequest, stream TrojanServerServic
 		err := stream.Send(&GetRecordsResponse{
 			Timestamp:  r.Timestamp,
 			UserHash:   r.UserHash,
-			ClientIP:   r.ClientIP,
+			ClientIp:   r.ClientIp,
 			ClientPort: r.ClientPort,
 			TargetHost: r.TargetHost,
 			TargetPort: r.TargetPort,

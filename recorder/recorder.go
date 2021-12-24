@@ -14,7 +14,7 @@ var Capacity int = 0
 type Record struct {
 	Timestamp  string
 	UserHash   string
-	ClientIP   string
+	ClientIp   string
 	ClientPort string
 	TargetHost string
 	TargetPort string
@@ -32,7 +32,7 @@ func Add(hash string, clientAddr, targetAddr net.Addr, transport string) {
 	record := Record{
 		Timestamp:  strconv.Itoa(int(time.Now().UnixMilli())),
 		UserHash:   hash,
-		ClientIP:   clientIP,
+		ClientIp:   clientIP,
 		ClientPort: clientPort,
 		TargetHost: targetHost,
 		TargetPort: targetPort,

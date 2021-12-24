@@ -74,13 +74,13 @@ message SetUsersResponse {
 message GetRecordsRequest {}
 
 message GetRecordsResponse {
-    string Timestamp = 1;
-    string UserHash = 2;
-    string ClientIP = 3;
-    string ClientPort = 4;
-    string TargetHost = 5;
-    string TargetPort = 6;
-    string Transport = 7;
+    string timestamp = 1;
+    string user_hash = 2;
+    string client_ip = 3;
+    string client_port = 4;
+    string target_host = 5;
+    string target_port = 6;
+    string transport = 7;
 }
 
 service TrojanClientService {
