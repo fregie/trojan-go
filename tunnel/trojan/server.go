@@ -62,7 +62,6 @@ func (c *InboundConn) Close() error {
 	log.Debug("user", c.hash, "from", c.Conn.RemoteAddr(), "tunneling to", c.metadata.Address, "closed",
 		"sent:", common.HumanFriendlyTraffic(atomic.LoadUint64(&c.sent)), "recv:", common.HumanFriendlyTraffic(atomic.LoadUint64(&c.recv)))
 	c.user.DelIP(c.ip)
-	recorder.Add(c.hash, c.Conn.RemoteAddr(), c.metadata.Address)
 	return c.Conn.Close()
 }
 
@@ -107,6 +106,11 @@ func (c *InboundConn) Auth() error {
 		return err
 	}
 	return nil
+}
+
+func (c *InboundConn) Record() {
+	log.Debug("user", c.hash, "from", c.Conn.RemoteAddr(), "tunneling to", c.metadata.Address)
+	recorder.Add(c.hash, c.Conn.RemoteAddr(), c.metadata.Address)
 }
 
 // Server is a trojan tunnel server
@@ -169,6 +173,7 @@ func (s *Server) acceptLoop() {
 				} else {
 					s.connChan <- inboundConn
 					log.Debug("normal trojan connection")
+					inboundConn.Record()
 				}
 
 			case Associate:
@@ -237,6 +242,8 @@ func NewServer(ctx context.Context, underlay tunnel.Server) (*Server, error) {
 	if cfg.API.Enabled {
 		go api.RunService(ctx, Name+"_SERVER", Auth)
 	}
+
+	recorder.Capacity = cfg.RecordCapacity
 
 	redirAddr := tunnel.NewAddressFromHostPort("tcp", cfg.RemoteHost, cfg.RemotePort)
 	s := &Server{

@@ -9,7 +9,7 @@ import (
 )
 
 var queue = lane.NewQueue()
-var limit int = 1000
+var Capacity int = 0
 
 type Record struct {
 	Timestamp  string
@@ -21,7 +21,7 @@ type Record struct {
 }
 
 func Add(hash string, clientAddr, targetAddr net.Addr) {
-	if queue.Size() >= limit {
+	if queue.Size() >= Capacity {
 		return
 	}
 
