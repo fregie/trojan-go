@@ -113,6 +113,10 @@ func (c *InboundConn) Record() {
 	recorder.Add(c.hash, c.Conn.RemoteAddr(), c.metadata.Address)
 }
 
+func (c *InboundConn) Hash() string {
+	return c.hash
+}
+
 // Server is a trojan tunnel server
 type Server struct {
 	auth       statistic.Authenticator
