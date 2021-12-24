@@ -194,6 +194,7 @@ func (s *ServerAPI) GetRecords(req *GetRecordsRequest, stream TrojanServerServic
 			ClientPort: r.ClientPort,
 			TargetHost: r.TargetHost,
 			TargetPort: r.TargetPort,
+			Transport:  r.Transport,
 		})
 		if err != nil {
 			return err
