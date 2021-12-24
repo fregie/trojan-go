@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
+	"github.com/google/uuid"
 	"github.com/p4gefau1t/trojan-go/api"
 	"github.com/p4gefau1t/trojan-go/common"
 	"github.com/p4gefau1t/trojan-go/config"
@@ -182,11 +183,13 @@ func (s *ServerAPI) ListUsers(req *ListUsersRequest, stream TrojanServerService_
 	return nil
 }
 
-func (s *ServerAPI) GetRecords(req *GetRecordsRequest, stream TrojanServerService_GetRecordsServer) error {
+func (s *ServerAPI) GetRecords(stream TrojanServerService_GetRecordsServer) error {
 	log.Debug("API: GetRecords")
-	record := recorder.Remove()
-	for record != nil {
-		r := record.(recorder.Record)
+	uid := uuid.Must(uuid.NewRandom()).String()
+	recordChan := recorder.Subscribe(uid)
+	defer recorder.Unsubscribe(uid)
+
+	for r := range recordChan {
 		err := stream.Send(&GetRecordsResponse{
 			Timestamp:  r.Timestamp,
 			UserHash:   r.UserHash,
@@ -199,7 +202,6 @@ func (s *ServerAPI) GetRecords(req *GetRecordsRequest, stream TrojanServerServic
 		if err != nil {
 			return err
 		}
-		record = recorder.Remove()
 	}
 	return nil
 }

@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/go-sql-driver/mysql v1.6.0
-	github.com/oleiade/lane v1.0.1
+	github.com/google/uuid v1.1.2
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/refraction-networking/utls v0.0.0-20201210053706-2179f286686b
 	github.com/shadowsocks/go-shadowsocks2 v0.1.5

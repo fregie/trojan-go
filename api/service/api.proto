@@ -95,5 +95,5 @@ service TrojanServerService {
     // setup existing users' config
     rpc SetUsers(stream SetUsersRequest) returns(stream SetUsersResponse){}
     // get traffic records
-    rpc GetRecords(GetRecordsRequest) returns(stream GetRecordsResponse){}
+    rpc GetRecords(stream GetRecordsRequest) returns(stream GetRecordsResponse){}
 }

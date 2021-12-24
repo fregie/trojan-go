@@ -38,26 +38,20 @@ func (apiController) Name() string {
 }
 
 func (o *apiController) listRecords(apiClient service.TrojanServerServiceClient) error {
-	stream, err := apiClient.GetRecords(o.ctx, &service.GetRecordsRequest{})
+	stream, err := apiClient.GetRecords(o.ctx)
 	if err != nil {
 		return err
 	}
 	defer stream.CloseSend()
-	result := []*service.GetRecordsResponse{}
 	for {
 		resp, err := stream.Recv()
 		if err != nil {
-			if err == io.EOF {
-				break
-			}
 			return err
 		}
-		result = append(result, resp)
+		data, err := json.MarshalIndent(resp, "", "    ")
+		common.Must(err)
+		fmt.Println(string(data))
 	}
-	data, err := json.Marshal(result)
-	common.Must(err)
-	fmt.Println(string(data))
-	return nil
 }
 
 func (o *apiController) listUsers(apiClient service.TrojanServerServiceClient) error {
