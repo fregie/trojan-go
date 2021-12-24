@@ -18,9 +18,10 @@ type Record struct {
 	ClientPort string
 	TargetHost string
 	TargetPort string
+	Transport  string
 }
 
-func Add(hash string, clientAddr, targetAddr net.Addr) {
+func Add(hash string, clientAddr, targetAddr net.Addr, transport string) {
 	if queue.Size() >= Capacity {
 		return
 	}
@@ -35,6 +36,7 @@ func Add(hash string, clientAddr, targetAddr net.Addr) {
 		ClientPort: clientPort,
 		TargetHost: targetHost,
 		TargetPort: targetPort,
+		Transport:  transport,
 	}
 	queue.Enqueue(record)
 }

@@ -110,7 +110,7 @@ func (c *InboundConn) Auth() error {
 
 func (c *InboundConn) Record() {
 	log.Debug("user", c.hash, "from", c.Conn.RemoteAddr(), "tunneling to", c.metadata.Address)
-	recorder.Add(c.hash, c.Conn.RemoteAddr(), c.metadata.Address)
+	recorder.Add(c.hash, c.Conn.RemoteAddr(), c.metadata.Address, "TCP")
 }
 
 func (c *InboundConn) Hash() string {
@@ -183,7 +183,6 @@ func (s *Server) acceptLoop() {
 			case Associate:
 				s.packetChan <- &PacketConn{
 					Conn: inboundConn,
-					hash: inboundConn.hash,
 				}
 				log.Debug("trojan udp connection")
 			case Mux:

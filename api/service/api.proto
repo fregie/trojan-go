@@ -80,6 +80,7 @@ message GetRecordsResponse {
     string ClientPort = 4;
     string TargetHost = 5;
     string TargetPort = 6;
+    string Transport = 7;
 }
 
 service TrojanClientService {

@@ -15,7 +15,6 @@ import (
 
 type PacketConn struct {
 	tunnel.Conn
-	hash string
 }
 
 func (c *PacketConn) ReadFrom(payload []byte) (int, net.Addr, error) {
@@ -81,8 +80,14 @@ func (c *PacketConn) ReadWithMetadata(payload []byte) (int, *tunnel.Metadata, er
 	}
 
 	log.Debug("udp packet from", c.RemoteAddr(), "metadata", addr.String(), "size", length)
-	recorder.Add(c.hash, c.RemoteAddr(), addr)
+	c.Record(addr)
 	return length, &tunnel.Metadata{
 		Address: addr,
 	}, nil
+}
+
+func (c *PacketConn) Record(addr net.Addr) {
+	if inboundConn, ok := c.Conn.(*InboundConn); ok {
+		recorder.Add(inboundConn.Hash(), c.RemoteAddr(), addr, "UDP")
+	}
 }
