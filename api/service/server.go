@@ -189,21 +189,25 @@ func (s *ServerAPI) GetRecords(stream TrojanServerService_GetRecordsServer) erro
 	recordChan := recorder.Subscribe(uid)
 	defer recorder.Unsubscribe(uid)
 
-	for r := range recordChan {
-		err := stream.Send(&GetRecordsResponse{
-			Timestamp:  r.Timestamp,
-			UserHash:   r.UserHash,
-			ClientIp:   r.ClientIp,
-			ClientPort: r.ClientPort,
-			TargetHost: r.TargetHost,
-			TargetPort: r.TargetPort,
-			Transport:  r.Transport,
-		})
-		if err != nil {
-			return err
+	for {
+		select {
+		case <-stream.Context().Done():
+			return nil
+		case r := <-recordChan:
+			err := stream.Send(&GetRecordsResponse{
+				Timestamp:  r.Timestamp,
+				UserHash:   r.UserHash,
+				ClientIp:   r.ClientIp,
+				ClientPort: r.ClientPort,
+				TargetHost: r.TargetHost,
+				TargetPort: r.TargetPort,
+				Transport:  r.Transport,
+			})
+			if err != nil {
+				return err
+			}
 		}
 	}
-	return nil
 }
 
 func newAPIServer(cfg *Config) (*grpc.Server, error) {
